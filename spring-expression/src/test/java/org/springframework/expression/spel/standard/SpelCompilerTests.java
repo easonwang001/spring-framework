@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 class SpelCompilerTests {
 
-	@Test // gh-24357
+	@Test  // gh-24357
 	void expressionCompilesWhenMethodComesFromPublicInterface() {
 		SpelParserConfiguration config = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, null);
 		SpelExpressionParser parser = new SpelExpressionParser(config);
@@ -50,16 +50,7 @@ class SpelCompilerTests {
 		IntStream.rangeClosed(1, 5).forEach(i -> assertThat(expression.getValue(component)).isEqualTo(42));
 	}
 
-
-	static class OrderedComponent implements Ordered {
-
-		@Override
-		public int getOrder() {
-			return 42;
-		}
-	}
-	
-	@Test // gh-25706
+	@Test  // gh-25706
 	void defaultMethodInvocation() {
 		SpelParserConfiguration config = new SpelParserConfiguration(SpelCompilerMode.IMMEDIATE, null);
 		SpelExpressionParser parser = new SpelExpressionParser(config);
@@ -83,35 +74,50 @@ class SpelCompilerTests {
 		SpelCompilationCoverageTests.assertIsCompiled(expression);
 		assertThat(expression.getValue(context)).isEqualTo(true);
 	}
-	
-	public static class User {
-		boolean isAdmin() { 
-			return true; 
+
+
+	static class OrderedComponent implements Ordered {
+
+		@Override
+		public int getOrder() {
+			return 42;
 		}
 	}
-	
-	public static class Item implements Editable {
-	    // some fields
-	    private String someField = "";
 
-	    // some getters and setters
 
-	   @Override
-	   public boolean hasSomeProperty() {
-	       return someField != null;
-	    }
+	public static class User {
+
+		boolean isAdmin() {
+			return true;
+		}
 	}
 
+
+	public static class Item implements Editable {
+
+		// some fields
+		private String someField = "";
+
+		// some getters and setters
+
+		@Override
+		public boolean hasSomeProperty() {
+			return someField != null;
+		}
+	}
+
+
 	public interface Editable {
-	   default boolean isEditable(User user) {
-	        return user.isAdmin() && hasSomeProperty();
-	   }
 
-	   default boolean isEditable2() {
-		   return false;
-	   }
+		default boolean isEditable(User user) {
+			return user.isAdmin() && hasSomeProperty();
+		}
 
-	   boolean hasSomeProperty();
+		default boolean isEditable2() {
+			return false;
+		}
+
+		boolean hasSomeProperty();
 	}
 
 }
